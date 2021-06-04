@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="easymall.dao.ProductsDao">
+	
+	<!-- 实现商品种类的显示 -->
+	<select id="allcategorys" resultType="easymall.po.Category">
+		select * from category
+	</select>
+	 
+	<!-- 根据输入条件查询商品信息 -->
+	<select id="prodlist" resultType="easymall.po.Products" parameterType="map">
+		select * from products where (price between #{minPrice} and #{maxPrice})
+		<if test="name!=null and name !='' ">
+			and name like concat('%',#{name},'%')
+		</if>
+		<if test="category!=null and category!='' ">
+			and category=#{category}
+		</if>
+	</select>
+	
+	<!-- 根据pid查找单个商品 -->
+	<select id="oneProduct" parameterType="String" resultType="easymall.po.Products">
+		select * from products where id=#{pid}
+	</select>
+	
+	<!-- 根据分类查找商品 -->
+	<select id="proclass" parameterType="Integer" resultType="easymall.po.Products">
+		select * from products where category=#{category}
+	</select>
+	
+	<!-- 存入一件新的商品 -->
+	<insert id="save" parameterType="easymall.po.Products">
+		insert into products(id,name,price,category,pnum,imgurl,description) 
+			values(#{id},#{name},#{price},#{category},#{pnum},#{imgurl},#{description})
+	</insert>
+	
+	<!-- 根据图片url查找 -->
+	<select id="findByImgurl" parameterType="String" resultType="easymall.po.Products">
+		select * from products where imgurl=#{imgurl}
+	</select>
+	
+	<!-- 根据id删除商品-->
+	<delete id="delprod" parameterType="String">
+		delete from products where id=#{pid}
+	</delete>
+	
+	<!-- 加入一种新的商品类别 -->
+	<insert id="addcate" parameterType="String">
+		insert into category(name,description) values(#{name},#{name})
+	</insert>
+	
+	<!-- 删除一种新的商品类别 -->
+	<insert id="delcate" parameterType="String">
+		delete from category where name = #{name}
+	</insert>
+
+</mapper>
